@@ -18,27 +18,6 @@ vim.keymap.set("n", "<leader>h", ":help ")
 vim.keymap.set("n", "<leader>K", ":lua vim.lsp.buf.hover()<CR>")
 vim.o.winborder = "double"
 
-vim.pack.add({
-	{ src = "https://github.com/vague2k/vague.nvim" },
-	{ src = "https://github.com/neovim/nvim-lspconfig" },
-	{ src = "https://github.com/stevearc/oil.nvim" },
-	{ src = "https://github.com/mason-org/mason.nvim" },
-	{ src = "https://github.com/mason-org/mason-lspconfig.nvim" },
-})
-
-require "mason".setup()
-require "mason-lspconfig".setup({
-	ensure_installed = { "lua_ls", "basedpyright", "vtsls" },
-	automatic_installation = true
-})
-vim.lsp.enable({ "lua_ls" })
-vim.lsp.enable({ "basedpyright" })
-vim.lsp.enable({ "vtsls" })
-vim.keymap.set("n", "<leader>lf", vim.lsp.buf.format)
-
-require "oil".setup()
-vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
-
 vim.opt.guicursor = table.concat({
 	"n-v-c:block",
 	"i-ci-ve:ver25-blinkwait700-blinkoff400-blinkon250",
@@ -46,4 +25,47 @@ vim.opt.guicursor = table.concat({
 	"o:hor50",
 	"sm:block-blinkwait175-blinkoff150-blinkon175"
 }, ",")
+
+vim.pack.add({
+	{ src = "https://github.com/vague2k/vague.nvim" },
+	{ src = "https://github.com/neovim/nvim-lspconfig" },
+	{ src = "https://github.com/stevearc/oil.nvim" },
+	{ src = "https://github.com/mason-org/mason.nvim" },
+	{ src = "https://github.com/mason-org/mason-lspconfig.nvim" },
+	{ src = "https://github.com/chomosuke/typst-preview.nvim" },
+})
+
+-- manual update key
+vim.keymap.set("n", "<leader>pu", function()
+  if vim.pack and vim.pack.update then
+    vim.pack.update()
+  else
+    vim.notify("vim.pack.update() not available (need nightly)", vim.log.levels.WARN)
+  end
+end, { desc = "Pack update" })
+
+-- run once on first launch of the day
+vim.api.nvim_create_autocmd("VimEnter", {
+  callback = function()
+    local ok, daily = pcall(require, "pack_daily")
+    if ok and daily.maybe_update then daily.maybe_update() end
+  end,
+})
+
+require "mason".setup()
+require "mason-lspconfig".setup({
+	ensure_installed = { "lua_ls", "basedpyright", "vtsls", "tinymist" },
+	automatic_installation = true
+})
+vim.lsp.enable({ "lua_ls" })
+vim.lsp.enable({ "basedpyright" })
+vim.lsp.enable({ "vtsls" })
+vim.lsp.enable({ "tinymist" })
+vim.keymap.set("n", "<leader>lf", vim.lsp.buf.format)
+
+require "oil".setup()
+vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
+
+require "typst-preview".setup()
+
 vim.cmd("colorscheme vague")
