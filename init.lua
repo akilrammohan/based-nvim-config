@@ -2,11 +2,15 @@ vim.o.number = true
 vim.o.relativenumber = true
 vim.o.signcolumn = 'yes'
 vim.o.wrap = true
-vim.o.tabstop = 2
 vim.o.termguicolors = true
--- vim.o.timeoutlen = 600
 vim.o.scrolloff = 10
 vim.o.sidescrolloff = 8
+
+-- Set tab to 4 spaces
+vim.opt.tabstop = 4
+vim.opt.shiftwidth = 4
+vim.opt.expandtab = true
+vim.opt.softtabstop = 4
 
 -- move lines up and down - taken from https://github.com/radleylewis/nvim-lite/blob/youtube_demo/init.lua
 -- changed to include visual line mode as well
@@ -14,6 +18,10 @@ vim.keymap.set("n", "<A-k>", ":m .-2<CR>==", { desc = "Move line up" })
 vim.keymap.set("n", "<A-j>", ":m .+1<CR>==", { desc = "Move line down" })
 vim.keymap.set({"v", "x"}, "<A-k>", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
 vim.keymap.set({"v", "x"}, "<A-j>", ":m '>+1<CR>gv=gv", { desc = "Move selection down" })
+
+-- persistent selections when indenting - also from same yt vid as above ^^
+vim.keymap.set({"v", "x"}, "<", "<gv", { desc = "Indent left and reselect" })
+vim.keymap.set({"v", "x"}, ">", ">gv", { desc = "Indent right and reselect" })
 
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
