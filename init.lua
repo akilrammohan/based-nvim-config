@@ -1,10 +1,19 @@
 vim.o.number = true
 vim.o.relativenumber = true
 vim.o.signcolumn = 'yes'
-vim.o.wrap = false
+vim.o.wrap = true
 vim.o.tabstop = 2
 vim.o.termguicolors = true
-vim.o.timeoutlen = 600
+-- vim.o.timeoutlen = 600
+vim.o.scrolloff = 10
+vim.o.sidescrolloff = 8
+
+-- move lines up and down - taken from https://github.com/radleylewis/nvim-lite/blob/youtube_demo/init.lua
+-- changed to include visual line mode as well
+vim.keymap.set("n", "<A-k>", ":m .-2<CR>==", { desc = "Move line up" })
+vim.keymap.set("n", "<A-j>", ":m .+1<CR>==", { desc = "Move line down" })
+vim.keymap.set({"v", "x"}, "<A-k>", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
+vim.keymap.set({"v", "x"}, "<A-j>", ":m '>+1<CR>gv=gv", { desc = "Move selection down" })
 
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
@@ -68,18 +77,21 @@ vim.api.nvim_create_autocmd('VimEnter', {
 
 require 'mason'.setup()
 require 'mason-lspconfig'.setup({
-	ensure_installed = { 'lua_ls', 'basedpyright', 'vtsls', 'tinymist' },
+	ensure_installed = { 'lua_ls', 'basedpyright', 'vtsls', 'tinymist', 'rust_analyzer' },
 	automatic_installation = true
 })
 vim.lsp.enable({ 'lua_ls' })
 vim.lsp.enable({ 'basedpyright' })
 vim.lsp.enable({ 'vtsls' })
 vim.lsp.enable({ 'tinymist' })
+vim.lsp.enable({ 'rust_analyzer' })
 vim.keymap.set('n', '<leader>lf', vim.lsp.buf.format)
 
 require 'oil'.setup()
 vim.keymap.set('n', '-', '<CMD>Oil<CR>', { desc = 'Open parent directory' })
 
 require 'typst-preview'.setup()
+vim.keymap.set('n', '<leader>e', '<CMD>LspTinymistExportPdf<CR>')
+vim.keymap.set('n', '<leader>r', '<CMD>TypstPreview<CR>')
 
 vim.cmd('colorscheme vague')
